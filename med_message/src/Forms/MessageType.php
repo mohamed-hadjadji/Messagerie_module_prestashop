@@ -26,9 +26,7 @@ class MessageType extends AbstractType
                     "placeholder" => "Titre",
                 ),
                 "label" => "Objet",
-                // 'constraints' => [
-                //     new NotBlank(['message' => 'Le champ objet est obligatoire.']),
-                // ],
+                
             ))
 
             ->add('message', TextareaType::class, array(
@@ -36,9 +34,7 @@ class MessageType extends AbstractType
                     "placeholder" => "Message",
                     'class' => 'tinymce'
                 ),
-                // 'constraints' => [
-                //     new NotBlank(['message' => 'Le champ message est obligatoire.']),
-                // ],
+                
             ))
 
             ->add('files', FileType::class, [
