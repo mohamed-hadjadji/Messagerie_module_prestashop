@@ -1,0 +1,118 @@
+version: '3'
+
+services:
+  mariadb:
+    image: docker.io/bitnami/mariadb:10.6
+    container_name: sales.biopoolservice-mariadbTest-prestashpop
+    restart: always
+    environment:
+      - MARIADB_ROOT_USER=root
+      - MARIADB_DATABASE=prestashop
+      - MARIADB_ROOT_PASSWORD=biopooltech
+      - BITNAMI_DEBUG=true
+    networks:
+      - devis-prestashop 
+    volumes:
+      - 'mariadb_data:/bitnami/mariadb/'
+
+  prestashop:
+    restart: always 
+    image: tazbiopooltech/sales:1.7.8.3
+    container_name: sales.biopoolservice-prestashop
+    ports:
+      - '8882:8080'
+      - '8443:8443'
+    environment:
+      - PRESTASHOP_HOST=127.0.0.1:8882
+      - PRESTASHOP_DATABASE_HOST=mariadb
+      - PRESTASHOP_DATABASE_PORT_NUMBER=3306
+      - PRESTASHOP_DATABASE_USER=root
+      - PRESTASHOP_DATABASE_NAME=prestashop
+      - PRESTASHOP_DATABASE_PASSWORD=biopooltech
+      - PRESTASHOP_EMAIL=eld@biopooltech.com
+      - PRESTASHOP_PASSWORD=Presta.2021
+      - PRESTASHOP_COUNTRY=fr
+      - PRESTASHOP_LANGUAGE=fr
+      - PRESTASHOP_SKIP_BOOTSTRAP=yes
+      - BITNAMI_DEBUG=true
+    volumes:
+      - ${PWD}/prestashop:/bitnami/prestashop
+    networks:
+      - devis-prestashop 
+    depends_on:
+      - mariadb
+    links:
+      - mariadb:mariadb
+
+  alerts_prestashop:
+    image: tazbiopooltech/alerts_prestashop:main
+    container_name: sales.biopoolservice-alertsTest
+    restart: on-failure
+    volumes:
+      - alerts_prestashop_alerts_prestashop_test:/app:rw
+    links:
+      - "mariadb"
+      - "prestashop"
+    networks:
+      - devis-prestashop
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: sales.biopoolservice-phpDBTest
+    ports:
+      - '8081:80'
+    depends_on:
+      - mariadb
+    environment:
+      - PMA_HOST=mariadb
+    networks:
+      - devis-prestashop
+
+  maildev:
+    container_name: maildev
+    image: djfarrelly/maildev:latest
+    networks:
+      - devis-prestashop
+    ports:
+      - "1080:80"
+    command:  ["bin/maildev", "--web", "80", "--smtp", "25", "--incoming-user","biopooltech", "--incoming-pass","biopooltech", "--hide-extensions", "STARTTLS"]
+ 
+  bpt-api:
+    build:
+      context: "../bpt-api"
+      dockerfile: "../conf/ws.Dockerfile"
+    env_file:
+      - "../bpt-api/conf/env/local.env"
+    command: "uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000"
+    volumes:
+      - "../bpt-api/.:/app"
+    networks:
+      - devis-prestashop
+    ports:
+      - 8000:8000
+    environment:
+      - ENVIRONMENT=dev
+      - TESTING=0
+    depends_on:
+      - mongo-database
+
+  mongo-database:
+    image: mongo:6-jammy
+    ports:
+      - '27017:27017'
+    networks: 
+      - devis-prestashop
+    volumes:
+      - ../bpt-api/conf/db/mongo/:/data/db
+
+volumes:
+  alerts_prestashop_alerts_prestashop_test:
+  mariadb_data:
+    driver: local
+  prestashop:
+    driver: local
+  alerts_prestashop: {}
+
+networks:
+  devis-prestashop:
+    

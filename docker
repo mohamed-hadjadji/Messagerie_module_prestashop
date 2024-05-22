@@ -1,0 +1,34 @@
+Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
+
+check the status of the Docker daemon by running the following command in your terminal:
+
+                         sudo systemctl status docker
+
+
+If the Docker daemon is not running, you can start it by running the following command:
+
+                         sudo systemctl start docker
+
+
+
+Donner toute les permission:    
+
+                         sudo usermod -aG docker $USER
+
+
+
+importer la bdd:
+
+                         chemain: /home/mohamed/Bureau/prestashop_dev/
+
+                         docker exec -i <id bitnami/mariadb> mysql -u root -pbiopooltech prestashop < mariadb.sql
+
+
+
+construire l'image avant de lancer le contenaire 
+
+                         docker compose up -d --build
+
+
+
+

@@ -1,0 +1,15 @@
+ba
+
+.font_form {
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 1114px;
+    height: 1703px;
+    left: 520px;
+    top: 216px;
+
+    background: rgba(49, 173, 204, 0.04);
+    border: 2px solid rgba(54, 58, 65, 0.7);
+    border-radius: 24px;
+}

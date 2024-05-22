@@ -1,0 +1,440 @@
+{% extends "PrestaShopBundle:Admin:layout.html.twig" %}
+
+{% block head %}
+   
+{% endblock %}
+{% block content %}
+
+   {% for message in app.flashes('success') %}
+      <div class="alert alert-success">
+            {{ message }}
+      </div>
+   {% endfor %}
+
+<div class="front_list">
+   
+   {# -------------------------------- #}
+
+<a href="{{ path('Message-create')}}" class="btn btn-primary">Envoyer un message</a>   
+   {# -------------------------------- #}
+   <table class="table" style="margin-top: 3rem">
+      <thead>
+         <tr id ="head_list">
+            <th>Id</th>
+            <th>Client</th>
+            <th>E-mail</th>
+            <th>Objet</th>
+            <th>Employé</th>
+            <th>Message</th>
+            <th>Etat</th>
+            <th>Id-salon</th>
+            <th>Date</th>
+            <th>Action</th>
+
+         </tr>
+      </thead>
+      <tbody>
+         <tr id="select">
+               <form id="filterForm" action="{{ path('Message-list') }}" method="POST">
+               <td></td>
+               <td>
+               <input type="text" class="inp_mail" id="customerInput">
+               <input type="text" id="customerId" name="name_customer" style="display:none">
+                     {# <select  class="inp_mail" name="name_customer">
+                        <option selected> </option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id_customer }}">{{ customer.firstname }} {{ customer.lastname }}</option>
+                        {% endfor %}
+
+                     </select> #}
+               </td>            
+               <td>
+                     <input type="text" class="inp_mail" id="customerInputM">
+                     <input type="text" id="customerIdM" name="id_customer" style="display:none">
+                     {# <select  class="inp_mail" name="id_customer">
+                        <option selected> </option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id_customer }}">{{ customer.email }}</option>
+                        {% endfor %}
+
+                     </select> #}
+               </td>
+               <td>
+                     <input class="inp_mail" type="text" name="title_key">
+               </td>
+               <td>
+                     <select  class="inp_mail" name="name_employee">
+                        <option selected> </option>
+                        {% for employee in employees %}
+                        <option value="{{ employee.id_employee }}">{{ employee.firstname }} {{ employee.lastname }}</option>
+                        {% endfor %}
+
+                     </select>
+               </td>
+               <td>
+                     <input class="inp_mail" type="text" name="message_key">
+               </td>
+               <td>
+                     <select  class="inp_mail" name="state">
+                        <option selected> </option>
+                        {% for state in states %}
+                        <option value="{{ state.id_state_comment }}">{{ state.description }}</option>
+                        {% endfor %}
+
+                     </select>
+               </td>
+               <td>
+                    <input class="inp_mail" type="text" name="id_thread">
+               </td>
+               <td>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="date_debut" id="datepickerd" placeholder="Du" readonly>
+                  </div>
+                  <div class="form-group">
+                        <input type="text" class="form-control" name="date_fin" id="datepickerf" placeholder="Au" readonly>
+                  </div>
+               </td>
+               <td>
+                  <button id="btnsearch" name="btnsearch" class="btn btn-secondary" type="submit"><i class="fa fa-search"> Rechercher</i></button>
+
+               </form>
+               {% if customerId or customerName or keyTitle or employeeName or keyMessage or state or threadId or  dateDebut or dateFin %}
+                  <form id="" action="{{ path('Message-list') }}" method="POST">
+
+                     <button id="btnres" class="btn btn-warning" type="submit"><i class="fa fa-times"> Annuler</i></button>
+
+                  </form>
+               {% endif %}
+               </td>
+
+         </tr>
+
+{# récupération des données de bpt-api  #}
+{# 
+      {% for msna in dataApi %} 
+         {% for custa in customersApi %}   
+            <tr>
+               <td> </td>
+               <td> {{custa.firstname}} {{custa.lastname}}</td>
+               <td> {{custa.email}}</td>
+         
+           
+               <td>{{msna.object}}</td>
+               <td> </td>
+               <td>{{msna.message}}</td>
+               <td> </td>
+               <td>{{msna.talk_id}}</td>
+               <td>{{msna.created_date}}</td>
+               <td> </td>
+            </tr>
+         {% endfor %}
+      {% endfor %}
+          #}
+
+      
+
+      {% for msn in data %}
+
+         <tr id ="body_list">
+
+               <td> {{msn.id_message_comment}} </td>
+               <td> {{msn.customer_firstname}} {{msn.customer_lastname}}</td>
+               <td> {{msn.customer_email}}</td>
+               <td> {{msn.title}} </td>
+               <td> {{msn.employee_firstname}}. {{msn.employee_lastname}}</td>
+               <td> <div id="text-container"> {{msn.message|raw}} </div></td>
+               <td>
+               {% if msn.etat == 1 %}
+                  <div class="rectangle"></div>
+               
+               {% elseif msn.etat == 2 %}
+                  <div class="red_rectangle"></div>
+               {% endif %}
+               </td>
+               <td> {{msn.id_thread}} </td>
+               <td> {{msn.date ? msn.date | date('Y-m-d H:i:s') : '' }} </td>
+               <td>
+                  <button class="eye-button" title="Afficher"><a  href="{{ path('Message-thread', {'idthread': msn.id_thread})}}"><i class="fa fa-eye"></i></a></button>
+                  {% if msn.file %}
+                     <button class="paperclip-button" title="Pièce jointe"><a href="{{'/img/p/'~ msn.file ~''}}"><i class="fa fa-paperclip"></i></a></button>
+                  {% endif %}
+                  <button class="trash-button" title="Supprimer" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce message ?')"><a href="{{ path('Message-delete', {'id': msn.id_message_comment})}}"><i class="fa fa-trash"></i></a></button>
+                  
+               </td>
+         </tr>
+      
+   {% endfor %}
+      </tbody>
+   </table>
+
+   {# Afficher la pagination #}
+
+   <nav>
+      <ul class="pagination">
+         <!-- Lien vers la page précédente (désactivé si on se trouve sur la 1ère page) -->
+         <li class="page-item {{currentPage == 1 ? "disabled" : "" }}">
+               <a href="{{ path('Message-list', { 'page' : currentPage - 1 }) }}" class="page-link">Précédente</a>
+         </li>
+         {% for page in range(1, pages) %}
+            <!-- Lien vers chacune des pages (activé si on se trouve sur la page correspondante) -->
+            <li class="page-item {{currentPage == page ? "active" : "" }}">
+                  <a href="{{ path('Message-list', { 'page' : page }) }}" class="page-link">{{page}}</a>
+               </li>
+         {% endfor %}
+            <!-- Lien vers la page suivante (désactivé si on se trouve sur la dernière page) -->
+            <li class="page-item {{currentPage == pages ? "disabled" : "" }}">
+               <a href="{{ path('Message-list', { 'page' : currentPage + 1 }) }}" class="page-link">Suivante</a>
+         </li>
+      </ul>
+   </nav>
+{# {% if pagination.totalPages > 1 %}
+    <div class="pagination">
+        {% for page in 1..pagination.totalPages %}
+            {% if page == pagination.page %}
+                <span class="current-page">{{ page }}</span>
+            {% else %}
+                <a href="{{ path('Message-list', { 'page': page }) }}">{{ page }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %} #}
+
+</div>
+
+{% endblock %}
+{% block javascripts %}
+{# <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>                        #}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- jQuery UI -->
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>                     
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.fr.min.js"></script> 
+
+<script>
+$(document).ready(function() {
+  $('#customerInput').autocomplete({
+    source: function(request, response) {
+      $.ajax({
+        url: '{{ path('Autocom-customer-name') }}',
+        method: 'POST',
+        dataType: 'json',
+        data: {
+          term: request.term
+        },
+        success: function(data) {
+        console.log(data);
+          response(data);
+        }
+      });
+    },
+    minLength: 2,
+    select: function(event, ui) {
+            event.preventDefault();
+            $('#customerInput').val(ui.item.label); // Afficher le nom complet dans l'input
+            $('#customerId').val(ui.item.value); // Récupérer l'ID du client dans un autre champ (par exemple, un champ masqué)
+        }
+  });
+});
+$(document).ready(function() {
+  $('#customerInputM').autocomplete({
+    source: function(request, response) {
+      $.ajax({
+        url: '{{ path('Autocom-customer-mail') }}',
+        method: 'POST',
+        dataType: 'json',
+        data: {
+          term: request.term
+        },
+        success: function(data) {
+        console.log(data);
+          response(data);
+        }
+      });
+    },
+    minLength: 2,
+    select: function(event, ui) {
+            event.preventDefault();
+            $('#customerInputM').val(ui.item.label); // Afficher le nom complet dans l'input
+            $('#customerIdM').val(ui.item.value); // Récupérer l'ID du client dans un autre champ (par exemple, un champ masqué)
+        }
+  });
+});
+</script>
+   
+{# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> #}
+<script>
+   $(function () {    
+      $('#datepickerd').datepicker({
+         isRTL: true,
+         autoclose: true, 
+         todayHighlight: true,
+         language: 'fr',
+         format: 'yyyy-mm-dd'
+      });
+   });
+   $(function () {    
+      $('#datepickerf').datepicker({
+         isRTL: true,
+         autoclose: true, 
+         todayHighlight: true,
+         language: 'fr',
+         format: 'yyyy-mm-dd'
+      });
+   });
+   
+      // $(document).ready(function() {
+      //    // Intercepter l'événement de soumission du formulaire
+      //    $('#filterForm').submit(function(e) {
+      //       e.preventDefault(); // Empêcher le rechargement de la page
+
+      //       // Récupérer les valeurs des champs de filtrage
+      //       var nameCustomer = $('input[name="name_customer"]').val();
+      //       var idCustomer = $('input[name="id_customer"]').val();
+      //       var nameEmployee = $('input[name="name_employee"]').val();
+      //       var state = $('input[name="state"]').val();
+      //       var startDate = $('input[name="date_debut"]').val();
+      //       var endDate = $('input[name="date_fin"]').val();
+
+
+      //       // Générer l'URL de la route 'Message-list'
+      //       var url = '{{ path('Message-list') }}';
+
+      //       // Envoyer une requête AJAX pour filtrer les messages
+      //       $.ajax({
+      //          url: url,
+      //          method: 'GET',
+      //          data: {
+      //          name_customer: nameCustomer,
+      //          id_customer: idCustomer,
+      //          name_employee: nameEmployee,
+      //          state: state,
+      //          date_debut: startDate,
+      //          date_fin: endDate
+      //          },
+      //          success: function(response) {
+      //          // Afficher les résultats dans le conteneur dédié
+      //          $('#body_list').html(response);
+      //          },
+      //          error: function() {
+      //          // Gérer les erreurs si nécessaire
+      //          alert('Une erreur s\'est produite lors du filtrage des messages.');
+      //          }
+      //       });
+      //    });
+      //    });
+
+   </script>
+{% endblock %}
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+
+   body{
+      background: rgba(49, 173, 204, 0.04);
+   }
+   .front_list{
+      background: #FFFFFF;
+      box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      padding: 25px; 
+      margin: 25px; 
+   }
+   input, select {
+      border-color: #E3FAFF;
+   }
+   #select{
+      background: #E3FAFF;
+      border-radius: 8px;
+      padding: 10px;
+   }
+   .inp_mail{
+
+        width: 100%;
+        height: 40px;
+        background: #FFFFFF;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 8px;
+    }
+   .rectangle {
+      width: 40px;
+      height: 15px;
+      background-color: #4FA919;
+      border-radius: 2px;
+    }
+   .red_rectangle {
+      width: 40px;
+      height: 15px;
+      background-color: #FF1632;
+      border-radius: 2px;
+    }
+
+   #text-container p {
+      width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+   }
+   #head_list th{
+      font-family: 'Barlow Semi Condensed';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 26px;
+      color: #000000;
+   }
+   #body_list td{
+      font-family: 'Barlow Semi Condensed';
+      font-style: normal;
+      font-weight: 400;
+      font-size: 12px;
+      line-height: 16px;
+      color: #000000;
+   }
+   #btnres{
+      margin-top: 10px;
+      width: 100%;
+   }
+   #btnsearch{
+      width: 100%;
+   }
+   .eye-button {
+      background-color: transparent;
+      border: none;
+      color: #555;
+      cursor: pointer;
+      font-size: 24px;
+      padding: 0;
+   }
+
+   .eye-button:hover {
+      color: #000;
+   }
+
+   .fa-eye {
+      margin-right: 10px;
+   }
+   .trash-button, .paperclip-button {
+      background-color: transparent;
+      border: none;
+      color: #555;
+      cursor: pointer;
+      font-size: 24px;
+      padding: 0;
+   }
+
+   .trash-button:hover {
+      color: #000;
+   }
+   .paperclip-button:hover {
+      color: #000;
+   }
+
+   .fa-paperclip {
+      margin-right: 10px;
+   }
+</style>   
+{% endblock %}

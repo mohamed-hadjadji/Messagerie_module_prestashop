@@ -1,0 +1,56 @@
+Message-create:
+    path: /medmessage/create
+    methods: [GET, POST]
+    defaults:
+      _controller: 'MedMessage\Controller\MessageController::createMessage'
+      _legacy_controller: 'MedMessageDemoController'
+      _legacy_link: 'MedMessageDemoController'
+
+Autocompletion-customer:
+    path: /medmessage/autocompletion
+    methods: [GET, POST]
+    defaults:
+      _controller: 'MedMessage\Controller\MessageController::autocompletionCustomer'
+      _legacy_controller: 'MedMessageDemoController'
+      _legacy_link: 'MedMessageDemoController'
+
+Autocom-customer-name:
+    path: /medmessage/autocomName
+    methods: [GET, POST]
+    defaults:
+      _controller: 'MedMessage\Controller\MessageController::autocompletionCustomerName'
+      _legacy_controller: 'MedMessageDemoController'
+      _legacy_link: 'MedMessageDemoController'
+      
+Autocom-customer-mail:
+    path: /medmessage/autocomMail
+    methods: [GET, POST]
+    defaults:
+      _controller: 'MedMessage\Controller\MessageController::autocompletionCustomerMail'
+      _legacy_controller: 'MedMessageDemoController'
+      _legacy_link: 'MedMessageDemoController'
+
+Message-list:
+    path: /medmessage/list
+    methods: [GET, POST]
+    defaults:
+      _controller: 'MedMessage\Controller\MessageController::listMessage'
+      _legacy_controller: 'MedMessageDemoController'
+      _legacy_link: 'MedMessageDemoController'
+
+Message-thread:
+    path: /medmessage/thread/{idthread}
+    methods: [GET, POST]
+    defaults:
+      _controller: 'MedMessage\Controller\MessageController::threadMessage'
+      _legacy_controller: 'MedMessageDemoController'
+      _legacy_link: 'MedMessageDemoController'
+
+Message-delete:
+    path: /medmessage/delete/{id}
+    methods: [GET, POST]
+    defaults:
+      _controller: 'MedMessage\Controller\MessageController::deleteMessage'
+      _legacy_controller: 'MedMessageDemoController'
+      _legacy_link: 'MedMessageDemoController'
+  

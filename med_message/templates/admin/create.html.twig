@@ -1,0 +1,218 @@
+{% extends "PrestaShopBundle:Admin:layout.html.twig" %}
+
+{% block header %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+{% block content %}
+{% for message in app.flashes('error') %}
+    <div class="alert alert-danger">
+        {{ message }}
+    </div>
+{% endfor %}
+
+<h1 id ="title_form">
+FORMULAIRE D’ENVOI DE MESSAGE
+</h1>
+<div class= "row justify-content-center">
+    <div class="fond_form">
+        
+        <div >
+            <span class="row justify-content-center" style= "margin: 50px">
+                <img id="avatar" src="/img/pr/default.jpg" alt>
+            </span>
+        </div>
+        <div class="container">
+            {{ form_start(form, { 'attr': {'novalidate': 'novalidate'}}) }}
+            <div class="ad_obj">
+            
+
+                <div class="form-group">
+
+                    <label>Sélectionnez un client</label>
+                    <input type="text" class="inp_mail" id="customerInput" name="customer" placeholder="Rechercher un client">
+                    <input type="text" id="customerId" name="id_customer" style="display:none">
+                    {# <select  class="inp_mail" name="id_customer" required>
+                        <option selected></option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id_customer }}">{{ customer.firstname }} {{ customer.lastname }} ({{ customer.email }})</option>
+                        {% endfor %}
+
+                    </select> #}
+                </div>
+
+                <div class="form-group">
+                    {{form_label(form.title, 'Objet', {'attr':{'class':'required'}})}}
+                    {{form_widget(form.title, {'attr':{'class':'inp_objet'}})}}
+                </div>
+            </div>
+            <div class="mess_fil">
+                <div class="form-group">
+                    {{form_label(form.message, 'Message', {'attr':{'class':'required'}})}}
+                    {{form_widget(form.message)}}
+                </div>
+                <div class="form-group">
+                    {{form_label(form.files, 'Joindre un fichier (*PDF)', {'attr':{'class':''}})}}
+                    {{form_widget(form.files, {'attr':{'class':'inp_fil'}})}}
+                </div>
+            </div>
+            <div class="form-group">
+
+                    {{form_widget(form.Envoyer, {'attr':{'class':'sub_mes'}})}}
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block javascripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- jQuery UI -->
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+{# <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script> #}
+<script>
+$(document).ready(function() {
+  $('#customerInput').autocomplete({
+    source: function(request, response) {
+      $.ajax({
+        url: '{{ path('Autocompletion-customer') }}',
+        method: 'POST',
+        dataType: 'json',
+        data: {
+          term: request.term
+        },
+        success: function(data) {
+        console.log(data);
+          response(data);
+        }
+      });
+    },
+    minLength: 2,
+    select: function(event, ui) {
+            event.preventDefault();
+            $('#customerInput').val(ui.item.label); // Afficher le nom complet dans l'input
+            $('#customerId').val(ui.item.value); // Récupérer l'ID du client dans un autre champ (par exemple, un champ masqué)
+        }
+  });
+});
+</script>
+<script src="https://cdn.tiny.cloud/1/nrnnxlkjh5undp5bavhf7uyxbs57ngaaegmtadtm2rh26bif/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+tinymce.init({
+      selector: '.tinymce',
+    //   plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount checklist mediaembed casechange export formatpainter pageembed linkchecker a11ychecker tinymcespellchecker permanentpen powerpaste advtable advcode editimage tinycomments tableofcontents footnotes mergetags autocorrect typography inlinecss',
+      toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+    //   tinycomments_mode: 'embedded',
+    //   tinycomments_author: 'Author name',
+    //   mergetags_list: [
+    //     { value: 'First.Name', title: 'First Name' },
+    //     { value: 'Email', title: 'Email' },
+    //   ]
+    });
+</script>
+
+{% endblock %}
+{% block stylesheets %}
+
+<style>
+    body{
+        background: #fff;
+    }
+    #title_form{
+        font-family: 'Montserrat'; 
+        font-style: normal; 
+        font-weight: 400; 
+        font-size: 35px; 
+        line-height: 54px; 
+        text-align: center; 
+        color: #000000
+    }
+    .fond_form{
+        box-sizing: border-box; 
+        /* position: absolute;  */
+        width: 50%;  
+        background: rgba(49, 173, 204, 0.04); 
+        border: 2px solid rgba(54, 58, 65, 0.7); 
+        border-radius: 24px;
+        margin-bottom: 50px;
+    }
+    #avatar{
+        border-radius : 50%; 
+        height: 180px; 
+        background: rgba(54, 58, 65, 0.76)
+    }
+    .ad_obj, .mess_fil{
+        box-sizing: border-box;
+        padding: 25px;
+        margin: 25px;
+        border: 1px solid rgba(54, 58, 65, 0.47);
+        border-radius: 8px;
+    }
+    .inp_mail, .inp_objet{
+
+        width: 100%;
+        height: 45px;
+        background: #FFFFFF;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 8px;
+    }
+    .lab_objet, .lab_mail{
+        position: absolute;
+        width: 134px;
+        height: 50px;
+        font-family: 'Barlow Semi Condensed';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 29px;
+        color: #000000;
+        text-align: left;
+    }
+    .inp_mes{
+        width: 100%;
+        height: 516px;
+        background: #FFFFFF;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 8px;
+    }
+    .lab_mes{
+        position: absolute;
+        width: 134px;
+        height: 50px;
+        font-family: 'Barlow Semi Condensed';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 24px;
+        line-height: 29px;
+        color: #000000; 
+
+    }
+    .inp_fil{
+        width: 100%;
+        height: 50px;
+        background: #FFFFFF;
+        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+        border-radius: 8px;  
+    }
+    .sub_mes {
+        padding: 20px;
+        background-color: #96CE63;
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        box-sizing: border-box; 
+        color: white;
+        border: none;
+        }
+
+    .sub_mes:hover {
+        opacity: 0.8;
+        }
+  </style>
+
+{% endblock %}
