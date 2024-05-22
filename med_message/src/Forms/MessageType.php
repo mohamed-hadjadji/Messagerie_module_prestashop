@@ -19,12 +19,7 @@ class MessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            // ->add('customer_email', EmailType::class, array(
-            //     "attr" => array(
-            //         "placeholder" => "Email",
-            //     ),
-            //     "label" => "Adresse Email"
-            // ))
+        
 
             ->add('title', TextType::class, array(
                 "attr" => array(

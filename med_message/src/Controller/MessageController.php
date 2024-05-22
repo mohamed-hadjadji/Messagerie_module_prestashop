@@ -105,14 +105,11 @@ class MessageController extends FrameworkBundleAdminController
                     $email = $raw['email'];
 
                     $subject = $messageComment->getTitle();
-                    // $fileId = $newFilename;
+                    
                     
                     $firstName = $raw['firstname'];
                     
-                    // $msg = "Vous trouverez ci-joint votre Devis";
-                    // $email = "toto@gmail.com";
-                    // $subject = "Votre devis";
-                    // $file_id = '111';
+
                     $mailer->sendEmail($shopId, $customerId, $objet, $talkId);
                 
                     //alert message 
@@ -143,32 +140,7 @@ class MessageController extends FrameworkBundleAdminController
     {
         //Récupérer id franchise
         $shopId = Context::getContext()->shop->id;
-        // $do= Context::getContext();
-        // dump($do);
-       
-        //Select messages par id franchise de bpt-api
-        // $mailer = new MailerService();
-        // $mailShop = 'franchiseloire@biopooltech.com';
-        // $idShop = $shopId;
-        // $apiKey = '9a9c3c3e-3583-4cca-ab63-df000fcb8e29';
 
-        // $dataApi = $mailer->getEmail($idShop, $apiKey, $mailShop);
-        // dump($dataApi);
-
-        // foreach ($dataApi as $emailData) {
-        //     $talkId = $emailData['talk_id'];
-        //     $object = $emailData['object'];
-        //     $message = $emailData['message'];
-        //     $createdDate = $emailData['created_date'];
-        //     $customerIdApi = $emailData['customer_id'];
-        
-        // //Select clients par id franchise id customer
-        // $dbca = 'SELECT * FROM ' . _DB_PREFIX_ . 'customer 
-        // WHERE id_shop ='.$shopId.' 
-        // AND id_customer ='.$customerIdApi;   
-        // $customersApi = Db::getInstance()->executeS($dbca);
-        // dump($customersApi);
-        // }
         //Select clients par id franchise
         $db = 'SELECT * FROM ' . _DB_PREFIX_ . 'customer 
         WHERE id_shop ='.$shopId.' ORDER BY firstname';   
@@ -270,21 +242,14 @@ class MessageController extends FrameworkBundleAdminController
                 'dateFin' => $dateFin,
                 'currentPage' => $currentPage,
                 'pages' => (int) ceil($totalCount / $limit),
-                // 'talkId' => $talkId,
-                // 'object' => $object,
-                // 'message' => $message,
-                // 'createdDate' => $createdDate,
-                // 'customersApi' => $customersApi,
-                // 'dataApi' => $dataApi
+
 
 
 
             ]
         );
          
-        // dump($idShop);
-        // $em = $this->getDoctrine()->getManager();
-        // $data = $em->getRepository(MessageComment::class)->findBy(array("employeId" => $this->getUser()->getId()));
+        
 
         
     }
@@ -420,7 +385,7 @@ class MessageController extends FrameworkBundleAdminController
                 //persist the data
                 $em->persist($messageComment);
                 $em->flush();
-                // echo json_encode($messageComment);
+
             
                 //send mail to the customer
 
@@ -438,7 +403,7 @@ class MessageController extends FrameworkBundleAdminController
                     $email = $raw['email'];
 
                     $objet = $messageComment->getTitle();
-                    // $fileId = $newFilename;
+                
                     
                     $shopName = $raw['name'];
                     $talkId = $messageComment->getThreadId();
