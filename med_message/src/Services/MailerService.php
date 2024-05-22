@@ -12,37 +12,11 @@ use Symfony\Component\Mime\Email;
 
 class MailerService
 {
-    // public function __construct(ClientInterface $client, string $apiKey)
-    // {
-    //     $this->client = $client;
-    //     $this->apiKey = $apiKey;
-    // }
 
-
-    // public function sendEmail($msg, $email, $titre, $pdf): void
-    // {
-
-    //     $email = (new Email())
-    //         ->from('Service@biopoolsafe.com')
-    //         ->to($email)
-    //         ->subject($titre)
-    //         ->text($msg)
-    //         ->attachFromPath('127.0.0.1:8882/img/files/' . $pdf);
-
-    //     // $dsn = 'smtp://809bd9983aaea5:44c190e9a5efcc@sandbox.smtp.mailtrap.io:2525?encryption=tls&auth_mode=login';
-    //     $dsn = 'smtp://biopooltech:biopooltech@maildev:25?encryption=tls&auth_mode=login';
-    //     $transport = Transport::fromDsn($dsn);
-    //     $mailer = new Mailer($transport);
-    //     $mailer->send($email);
-    // }
 
     public function sendEmail($shopId, $customerId, $objet, $talkId): void
     { 
-        // $apiKey = '600b830d-0d7b-4be5-9ef2-9ea8b55f2daf';
-        // $shopId = 7;
-        // $customerId = 199;
-        // $talkId = 33656;
-        // $objet = 'test moh test';
+    
     
         $client= new Client();
         $response = $client->post('http://bpt-api:8000/send_mail',[
@@ -135,9 +109,7 @@ class MailerService
 
     public function getEmail($idShop, $apiKey, $mailShop)
     {
-        // $mailShop = 'franchisealsace@biopooltech.com';
-        // $idShop = 15;
-        // $apiKey = '5cd88ac3-7b81-4ac3-af08-8abf673da108';
+    
         // Créez une instance de Guzzle Client
         $client = new Client();
 
@@ -152,11 +124,7 @@ class MailerService
                     'shop-mail' => $mailShop, // Filtrez par adresse e-mail du shop
                     'api-key-user' => $apiKey, // Utilisez l'API key pour l'authentification
                 ],
-                // 'json' => [
-                //     'shop_id' => $idShop,
-                //     'shop-mail' => $mailShop, // Filtrez par adresse e-mail du shop
-                //     'api-key-user' => $apiKey, // Utilisez l'API key pour l'authentification
-                // ],
+                
             ]);
 
             // Vérifiez si la réponse a réussi (code de réponse 200)
